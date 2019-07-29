@@ -29,7 +29,7 @@
                     </a>
                     @endforeach
                     <hr>
-                    <small><a href="{{route('profile', $article->user)}}">{{ $article->user->name }}</a>, {{ $article->created_at->locale('tr')->diffForHumans() }} ekledi</small>
+                    <small><a href="{{route('profile', $article->user)}}">{{ $article->user->displayname }}</a>, {{ $article->created_at->locale('tr')->diffForHumans() }} ekledi</small>
                 </div>
             </div>
 

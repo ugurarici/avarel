@@ -51,12 +51,12 @@
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    Bildirimler <span class="caret"></span>
+                                    Bildirimler <span class="badge badge-primary">{{Auth::user()->unreadNotifications()->count()}}</span><span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     @foreach(Auth::user()->notifications()->latest()->take(5)->get() as $notification)
-                                    <a class="dropdown-item" href="{{ $notification->data['action'] }}">
+                                    <a class="dropdown-item @if(is_null($notification->read_at)) active @endif" href="{{ route('notification.action', $notification->id) }}">
                                         {{$notification->data['message']}}
                                     </a>
                                     @endforeach

@@ -7,6 +7,7 @@ use App\Article;
 use App\Comment;
 use App\Tag;
 use App\User;
+use App\Notifications\ArticleCommentReceived;
 
 class ArticleController extends Controller
 {
@@ -49,7 +50,7 @@ class ArticleController extends Controller
             }
         }
 
-        return redirect()->route('articles.detail', $article->id);
+        return redirect()->route('articles.detail', $article);
     }
 
     public function detail(Article $article)
@@ -92,7 +93,8 @@ class ArticleController extends Controller
     public function addComment(Article $article, Request $request)
     {
         $request->validate([
-            'comment' => 'required|string|min:5'
+            'comment' => 'required|string|min:5',
+            'parent_id' => 'nullable|exists:comments,id'
         ]);
 
         $comment = new Comment;
@@ -101,6 +103,8 @@ class ArticleController extends Controller
         $comment->body = $request->input('comment');
         if($request->input('parent_id')) $comment->parent_id = $request->input('parent_id');
         $comment->save();
+        if($article->user->id!==$request->user()->id)
+            $article->user->notify(new ArticleCommentReceived($article, $request->user()));
         return redirect()->route('articles.detail', $article);
     }
 

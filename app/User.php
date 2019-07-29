@@ -90,4 +90,9 @@ class User extends Authenticatable
     {
         return $this->followees->contains($user);
     }
+
+    public function commentedArticles()
+    {
+        return $this->belongsToMany(Article::class, 'comments', 'user_id', 'article_id')->groupBy('pivot_article_id');
+    }
 }

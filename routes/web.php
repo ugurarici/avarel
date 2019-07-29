@@ -33,6 +33,12 @@ Route::get('users/{user}/articles', 'ArticleController@userArticles')->name('use
 
 Route::get('havadurumu', 'HomeController@showWeather');
 
+Route::get('notification/{id}', function($id){
+    $notification = request()->user()->notifications()->where('id', $id)->firstOrFail();
+    $notification->markAsRead();
+    return redirect($notification->data['action']);
+})->name('notification.action')->middleware('auth');
+
 Route::post('profile', 'ProfileController@update')->name('profile.update')->middleware('auth');
 Route::get('{user}/follow', 'ProfileController@follow')->name('follow')->middleware('auth');
 Route::get('{user}/unfollow', 'ProfileController@unfollow')->name('unfollow')->middleware('auth');
