@@ -43,12 +43,14 @@ class ArticleController extends Controller
         $article->save();
 
         if($request->input('tags')) {
-            $tags = explode(',', $request->input('tags'));
+            $tags = array_unique(array_map('trim', explode(',', $request->input('tags'))));
             foreach ($tags as $tag) {
                 $t = Tag::firstOrCreate(['tag'=>$tag]);
                 $article->tags()->attach($t);
             }
         }
+
+        $request->session()->flash('success_message', 'Yeni makaleniz başarıyla eklendi.');
 
         return redirect()->route('articles.detail', $article);
     }
@@ -87,6 +89,8 @@ class ArticleController extends Controller
         }
         $article->tags()->sync($tagsToSync);
 
+        $request->session()->flash('success_message', 'Makale başarıyla güncellendi.');
+
         return redirect()->route('articles.detail', $article->id);
     }
 
@@ -103,6 +107,7 @@ class ArticleController extends Controller
         $comment->body = $request->input('comment');
         if($request->input('parent_id')) $comment->parent_id = $request->input('parent_id');
         $comment->save();
+        $request->session()->flash('success_message', 'Yorumunuz başarıyla eklendi.');
         event(new ArticleCommentCreated($article, $comment));
         return redirect()->route('articles.detail', $article);
     }

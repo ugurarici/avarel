@@ -21,13 +21,20 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('feed', 'HomeController@feed')->name('feed');
 
 
-Route::get('articles', 'ArticleController@index')->name('articles.index');
-Route::get('articles/new', 'ArticleController@create')->name('articles.create')->middleware('auth', 'checkage:18');
-Route::post('articles', 'ArticleController@store')->name('articles.store')->middleware('auth');
-Route::get('articles/{article}', 'ArticleController@detail')->name('articles.detail');
-Route::get('articles/{article}/edit', 'ArticleController@edit')->name('articles.edit')->middleware('auth');
-Route::post('articles/{article}', 'ArticleController@update')->name('articles.update')->middleware('auth');
-Route::post('articles/{article}/comments', 'ArticleController@addComment')->name('articles.addComment')->middleware('auth');
+Route::prefix('articles')->name('articles.')->group(function () {
+    Route::get('/', 'ArticleController@index')->name('index');
+    
+    Route::middleware('auth')->group(function(){
+        Route::get('/new', 'ArticleController@create')->name('create');
+        Route::post('/', 'ArticleController@store')->name('store');
+        Route::get('/{article}/edit', 'ArticleController@edit')->name('edit');
+        Route::post('/{article}', 'ArticleController@update')->name('update');
+        Route::post('/{article}/comments', 'ArticleController@addComment')->name('addComment');
+    });
+
+    Route::get('/{article}', 'ArticleController@detail')->name('detail');
+});
+
 Route::get('tags/{tag}', 'ArticleController@tagArticles')->name('tag.articles');
 Route::get('users/{user}/articles', 'ArticleController@userArticles')->name('user.articles');
 
@@ -39,7 +46,15 @@ Route::get('notification/{id}', function($id){
     return redirect($notification->data['action']);
 })->name('notification.action')->middleware('auth');
 
+Route::get('generatesitemap', function(){
+    \App\Jobs\GenerateSitemap::dispatch();
+    return redirect()->route('feed');
+});
+
 Route::post('profile', 'ProfileController@update')->name('profile.update')->middleware('auth');
-Route::get('{user}/follow', 'ProfileController@follow')->name('follow')->middleware('auth');
-Route::get('{user}/unfollow', 'ProfileController@unfollow')->name('unfollow')->middleware('auth');
-Route::get('{user}', 'ProfileController@profile')->name('profile');
+
+Route::prefix('{user}')->group(function () {
+    Route::get('/follow', 'ProfileController@follow')->name('follow')->middleware('auth');
+    Route::get('/unfollow', 'ProfileController@unfollow')->name('unfollow')->middleware('auth');
+    Route::get('/', 'ProfileController@profile')->name('profile');
+});

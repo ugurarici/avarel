@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Str;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -70,6 +71,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'birth_date' => $data['birth_date'],
+            'api_token' => hash('sha256', Str::random(60)),
         ]);
     }
 }

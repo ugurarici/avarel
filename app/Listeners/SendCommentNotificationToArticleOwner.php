@@ -7,7 +7,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Notifications\ArticleCommentReceived;
 
-class SendCommentNotificationToArticleOwner
+class SendCommentNotificationToArticleOwner implements ShouldQueue
 {
     /**
      * Create the event listener.

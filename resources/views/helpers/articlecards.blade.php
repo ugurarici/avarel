@@ -1,4 +1,4 @@
-@foreach($articles as $article)
+@forelse($articles as $article)
 <div class="card">
     @if($article->image)
     <a href="{{route('articles.detail', $article)}}">
@@ -23,4 +23,6 @@
         </p>
     </div>
 </div>
-@endforeach
+@empty
+Yok ki :(
+@endforelse

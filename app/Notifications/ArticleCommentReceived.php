@@ -9,7 +9,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use App\Article;
 use App\User;
 
-class ArticleCommentReceived extends Notification
+class ArticleCommentReceived extends Notification implements ShouldQueue
 {
     use Queueable;
 

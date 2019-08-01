@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+	<url>
+	<loc>http://localhost/oyk2019yaz/articles/public/home</loc>
+		<priority>1.0</priority>
+		<lastmod>2019-07-31T16:55:22+03:00</lastmod>
+		<changefreq>daily</changefreq>
+	</url>
+	<url>
+	<loc>http://localhost/oyk2019yaz/articles/public/articles/3</loc>
+		<priority>0.9</priority>
+		<lastmod>2019-07-31T10:23:33+03:00</lastmod>
+		<changefreq>weekly</changefreq>
+	</url>
+	<url>
+	<loc>http://localhost/oyk2019yaz/articles/public/articles/2</loc>
+		<priority>0.9</priority>
+		<lastmod>2019-07-28T11:10:47+03:00</lastmod>
+		<changefreq>weekly</changefreq>
+	</url>
+	<url>
+	<loc>http://localhost/oyk2019yaz/articles/public/articles/1</loc>
+		<priority>0.9</priority>
+		<lastmod>2019-07-27T17:04:02+03:00</lastmod>
+		<changefreq>weekly</changefreq>
+	</url>
+	<url>
+	<loc>http://localhost/oyk2019yaz/articles/public/ugur</loc>
+		<priority>0.9</priority>
+		<lastmod>2019-07-27T18:24:29+03:00</lastmod>
+		<changefreq>daily</changefreq>
+	</url>
+	<url>
+	<loc>http://localhost/oyk2019yaz/articles/public/tekt</loc>
+		<priority>0.9</priority>
+		<lastmod>2019-07-28T11:14:24+03:00</lastmod>
+		<changefreq>daily</changefreq>
+	</url>
+</urlset>
+

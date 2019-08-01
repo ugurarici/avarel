@@ -16,3 +16,16 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('gettoken', function(Request $request){
+
+    if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        return ['token' => Auth::user()->api_token];
+    }
+
+    return response()->json([
+        'message' => 'Geçerli bir kullanıcı bulunamadı.'
+    ], 401);
+});
+
+Route::resource('articles', 'API\ArticleResourceController');

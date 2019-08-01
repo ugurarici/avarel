@@ -95,6 +95,13 @@
         </nav>
 
         <main class="py-4">
+            @if(session()->exists('success_message'))
+            <div class="container">
+                <div class="alert alert-success" role="alert">
+                    {{session('success_message')}}
+                </div>
+            </div>
+            @endif
             @yield('content')
         </main>
         <footer>
