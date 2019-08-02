@@ -27,8 +27,8 @@ Route::prefix('articles')->name('articles.')->group(function () {
     Route::middleware('auth')->group(function(){
         Route::get('/new', 'ArticleController@create')->name('create');
         Route::post('/', 'ArticleController@store')->name('store');
-        Route::get('/{article}/edit', 'ArticleController@edit')->name('edit');
-        Route::post('/{article}', 'ArticleController@update')->name('update');
+        Route::get('/{article}/edit', 'ArticleController@edit')->name('edit')->middleware('can:update,article');
+        Route::post('/{article}', 'ArticleController@update')->name('update')->middleware('can:update,article');
         Route::post('/{article}/comments', 'ArticleController@addComment')->name('addComment');
     });
 

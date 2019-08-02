@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 
 class Article extends Model
 {
+    protected $appends = array('summary', 'user');
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -30,5 +32,16 @@ class Article extends Model
     public function getSummaryAttribute()
     {
         return Str::words($this->content, 10);
+    }
+
+    public function getUserAttribute()
+    {
+        return $this->user()->first();
+    }
+
+    public function delete() {
+        $this->comments()->delete();
+        $this->tags()->sync([]);
+        return parent::delete();
     }
 }

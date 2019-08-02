@@ -9,7 +9,7 @@
                     {{ $article->title }}
                     <a href="{{ route('articles.index') }}" class="float-right btn btn-sm">Geri Dön</a>
                     @auth
-                    @if(Auth::user()->id === $article->user->id)
+                    @if(Auth::user()->can('update', $article))
                     <a href="{{route('articles.edit', $article->id)}}" class="float-right btn btn-sm">Düzenle</a>
                     @endif
                     @endauth

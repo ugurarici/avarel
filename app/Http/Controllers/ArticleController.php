@@ -62,14 +62,11 @@ class ArticleController extends Controller
 
     public function edit(Article $article, Request $request)
     {
-        if($request->user()->id!==$article->user->id) return redirect()->route('home');
         return view('articles.edit', compact('article'));
     }
 
     public function update(Article $article, Request $request)
     {
-        if($request->user()->id!==$article->user->id) return redirect()->route('home');
-
         $request->validate(array(
             'title' => 'required|string|min:3|max:100',
             'content' => 'required|string|min:5'

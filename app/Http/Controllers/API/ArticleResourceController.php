@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Article;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Article;
+use App\Comment;
+use App\Tag;
+use App\User;
+use App\Events\ArticleCommentCreated;
+use Gate;
 
 class ArticleResourceController extends Controller
 {
@@ -21,7 +26,7 @@ class ArticleResourceController extends Controller
      */
     public function index()
     {
-        return Article::latest()->paginate(1);
+        return Article::latest()->paginate(10);
     }
 
     /**
@@ -31,7 +36,12 @@ class ArticleResourceController extends Controller
      */
     public function create()
     {
-        //
+        return array(
+            'title' => 'required|string|min:3|max:100',
+            'content' => 'required|string|min:5',
+            'tags' => 'nullable|string',
+            'image' => 'nullable|image|max:3000'
+        );
     }
 
     /**
@@ -42,7 +52,32 @@ class ArticleResourceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate(array(
+            'title' => 'required|string|min:3|max:100',
+            'content' => 'required|string|min:5',
+            'tags' => 'nullable|string',
+            'image' => 'nullable|image|max:3000'
+        ));
+
+        $article = new Article;
+        $article->user_id = $request->user()->id;
+        $article->title = $request->input('title');
+        $article->content = $request->input('content');
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('public/images');
+            $article->image = $path;
+        }
+        $article->save();
+
+        if($request->input('tags')) {
+            $tags = array_unique(array_map('trim', explode(',', $request->input('tags'))));
+            foreach ($tags as $tag) {
+                $t = Tag::firstOrCreate(['tag'=>$tag]);
+                $article->tags()->attach($t);
+            }
+        }
+
+        return response()->json($article, 201);
     }
 
     /**
@@ -64,7 +99,11 @@ class ArticleResourceController extends Controller
      */
     public function edit(Article $article)
     {
-        //
+        return array(
+            'title' => 'required|string|min:3|max:100',
+            'content' => 'required|string|min:5',
+            'tags' => 'comma seperated string values'
+        );
     }
 
     /**
@@ -76,7 +115,29 @@ class ArticleResourceController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-        //
+        if ($request->user()->cant('update', $article)) 
+            return abort(403, "Bu makaleyi güncelleme yetkiniz bulunmuyor.");
+
+        $request->validate(array(
+            'title' => 'required|string|min:3|max:100',
+            'content' => 'required|string|min:5'
+        ));
+
+        $article->title = $request->input('title');
+        $article->content = $request->input('content');
+        $article->save();
+
+        $tagsToSync=[];
+        if($request->input('tags')) {
+            $tags = array_unique(array_map('trim', explode(',', $request->input('tags'))));
+            foreach ($tags as $tag) {
+                $t = Tag::firstOrCreate(['tag'=>$tag]);
+                $tagsToSync[]=$t->id;
+            }
+        }
+        $article->tags()->sync($tagsToSync);
+
+        return response()->json($article);
     }
 
     /**
@@ -85,8 +146,11 @@ class ArticleResourceController extends Controller
      * @param  \App\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Article $article)
+    public function destroy(Request $request, Article $article)
     {
-        //
+        if ($request->user()->cant('delete', $article)) 
+            return abort(403, "Bu makaleyi silme yetkiniz bulunmuyor.");
+
+        return ['result' => $article->delete()];
     }
 }
