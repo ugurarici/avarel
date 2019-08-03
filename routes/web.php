@@ -11,6 +11,8 @@
 |
 */
 
+Route::view('spa', 'spa');
+
 Route::get('/', function () {
     return redirect()->route('articles.index');
 });

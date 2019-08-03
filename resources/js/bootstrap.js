@@ -37,6 +37,32 @@ if (token) {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
+//  vuejs içinde axios ile gönderdiğimiz taleplerin api kök adresini meta etiketinden okuyoruz
+let apiBaseUrl = document.head.querySelector('meta[name="api-base-url"]');
+
+if (apiBaseUrl) {
+    window.axios.defaults.baseURL = apiBaseUrl.content;
+} else {
+    console.error('API Base URL not found!');
+}
+
+//  vuejs içinde axios ile gönderdiğimiz taleplere meta etiketlerinde user api token varsa ekliyoruz
+let userApiToken = document.head.querySelector('meta[name="user-api-token"]');
+
+if (userApiToken) {
+    window.userApiToken = userApiToken.content
+    window.axios.interceptors.request.use(function (config) {
+        if (userApiToken.content) {
+            config.headers.Authorization = "Bearer " + userApiToken.content
+        }
+        return config;
+    }, function (error) {
+        return Promise.reject(error);
+    });
+} else {
+    console.log('User API token not found');
+}
+
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
